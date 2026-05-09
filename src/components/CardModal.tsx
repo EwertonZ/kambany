@@ -7,13 +7,17 @@ import { X, Trash2, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 
 export default function CardModal({ card, columnId, onClose }: { card: Card; columnId: string; onClose: () => void }) {
-  const { updateCard, deleteCard, addComment, deleteComment } = useKanban();
+  const { activeBoard, updateCard, deleteCard, addComment, deleteComment } = useKanban();
   const [comment, setComment] = useState("");
+
+  const currentCard = activeBoard?.columns
+    .find((col) => col.id === columnId)
+    ?.cards.find((c) => c.id === card.id) || card;
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    updateCard(columnId, card.id, {
+    updateCard(columnId, currentCard.id, {
       title: formData.get("title") as string,
       description: formData.get("description") as string,
     });
@@ -34,29 +38,29 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
             <form id="card-form" onSubmit={handleSave} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-900 mb-1">Título</label>
-                <input name="title" defaultValue={card.title} autoFocus
+                <input name="title" defaultValue={currentCard.title} autoFocus
                   className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-900" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-900 mb-1">Descrição</label>
-                <textarea name="description" defaultValue={card.description} rows={4}
+                <textarea name="description" defaultValue={currentCard.description} rows={4}
                   className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-none text-slate-900" />
               </div>
             </form>
 
             <div className="pt-6 border-t border-slate-100">
-              <div className="flex items-center gap-2 mb-4text-slate-900">
+              <div className="flex items-center gap-2 mb-4 text-slate-900">
                 <MessageSquare size={18} />
                 <h3 className="font-medium text-slate-900">Comentários</h3>
               </div>
               <div className="space-y-3 mb-4">
-                {card.comments.map(c => (
+                {currentCard.comments.map(c => (
                   <div key={c.id} className="bg-slate-50 p-3 rounded-lg flex justify-between items-start group">
                     <div>
                       <p className="text-sm text-slate-900">{c.text}</p>
                       <span className="text-xs text-slate-400 mt-1 block">{format(c.createdAt, "dd/MM/yyyy HH:mm")}</span>
                     </div>
-                    <button onClick={() => deleteComment(columnId, card.id, c.id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => deleteComment(columnId, currentCard.id, c.id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Trash2 size={14} />
                     </button>
                   </div>
