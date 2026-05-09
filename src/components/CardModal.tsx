@@ -53,7 +53,7 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
                 {card.comments.map(c => (
                   <div key={c.id} className="bg-slate-50 p-3 rounded-lg flex justify-between items-start group">
                     <div>
-                      <p className="text-smtext-slate-900">{c.text}</p>
+                      <p className="text-sm text-slate-900">{c.text}</p>
                       <span className="text-xs text-slate-400 mt-1 block">{format(c.createdAt, "dd/MM/yyyy HH:mm")}</span>
                     </div>
                     <button onClick={() => deleteComment(columnId, card.id, c.id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
