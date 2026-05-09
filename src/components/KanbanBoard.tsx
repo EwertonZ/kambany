@@ -98,7 +98,7 @@ function ColumnView({ column, onCardClick }: { column: Column, onCardClick: (car
   return (
     <div className="flex flex-col bg-slate-100 rounded-2xl w-[320px] shrink-0 max-h-full">
       <div className="p-4 flex justify-between items-center group">
-        <h3 className="font-semiboldtext-slate-900">{column.title} <span className="text-xs font-normal text-slate-400 ml-2">{column.cards.length}</span></h3>
+        <h3 className="font-semibold text-slate-900">{column.title} <span className="text-xs font-normal text-slate-400 ml-2">{column.cards.length}</span></h3>
         <button onClick={() => { if(confirm("Excluir coluna?")) deleteColumn(column.id) }} className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
           <X size={16} />
         </button>
