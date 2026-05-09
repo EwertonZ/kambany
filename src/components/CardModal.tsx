@@ -2,12 +2,14 @@
 
 import { Card } from "@/types/kanban";
 import { useKanban } from "@/context/KanbanContext";
+import { useTheme } from "@/context/ThemeContext";
 import { useState } from "react";
 import { X, Trash2, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 
 export default function CardModal({ card, columnId, onClose }: { card: Card; columnId: string; onClose: () => void }) {
   const { activeBoard, updateCard, deleteCard, addComment, deleteComment } = useKanban();
+  const { isDark } = useTheme();
   const [comment, setComment] = useState("");
 
   const currentCard = activeBoard?.columns
@@ -25,10 +27,10 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col">
-        <div className="flex justify-between items-center p-6 border-b border-slate-100">
-          <h2 className="text-xl font-semibold text-slate-800">Editar Tarefa</h2>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
+      <div className={`rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col transition-colors ${isDark ? "bg-slate-800" : "bg-white"}`}>
+        <div className={`flex justify-between items-center p-6 border-b transition-colors ${isDark ? "border-slate-700" : "border-slate-100"}`}>
+          <h2 className={`text-xl font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}>Editar Tarefa</h2>
+          <button onClick={onClose} className={`p-2 rounded-full transition-colors ${isDark ? "hover:bg-slate-700 text-slate-400" : "hover:bg-slate-100 text-slate-500"}`}>
             <X size={20} />
           </button>
         </div>
@@ -37,30 +39,30 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
           <div className="col-span-2 space-y-6">
             <form id="card-form" onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1">Título</label>
+                <label className={`block text-sm font-medium mb-1 ${isDark ? "text-slate-200" : "text-slate-900"}`}>Título</label>
                 <input name="title" defaultValue={currentCard.title} autoFocus
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-900" />
+                  className={`w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all ${isDark ? "bg-slate-700 text-slate-100 border-slate-600 focus:border-blue-500 focus:ring-blue-900" : "bg-white text-slate-900 border-slate-200 focus:border-blue-500 focus:ring-blue-100"}`} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1">Descrição</label>
+                <label className={`block text-sm font-medium mb-1 ${isDark ? "text-slate-200" : "text-slate-900"}`}>Descrição</label>
                 <textarea name="description" defaultValue={currentCard.description} rows={4}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-none text-slate-900" />
+                  className={`w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all resize-none ${isDark ? "bg-slate-700 text-slate-100 border-slate-600 focus:border-blue-500 focus:ring-blue-900" : "bg-white text-slate-900 border-slate-200 focus:border-blue-500 focus:ring-blue-100"}`} />
               </div>
             </form>
 
-            <div className="pt-6 border-t border-slate-100">
-              <div className="flex items-center gap-2 mb-4 text-slate-900">
+            <div className={`pt-6 border-t transition-colors ${isDark ? "border-slate-700" : "border-slate-100"}`}>
+              <div className={`flex items-center gap-2 mb-4 ${isDark ? "text-slate-100" : "text-slate-900"}`}>
                 <MessageSquare size={18} />
-                <h3 className="font-medium text-slate-900">Comentários</h3>
+                <h3 className={`font-medium ${isDark ? "text-slate-100" : "text-slate-900"}`}>Comentários</h3>
               </div>
               <div className="space-y-3 mb-4">
                 {currentCard.comments.map(c => (
-                  <div key={c.id} className="bg-slate-50 p-3 rounded-lg flex justify-between items-start group">
+                  <div key={c.id} className={`p-3 rounded-lg flex justify-between items-start group transition-colors ${isDark ? "bg-slate-700" : "bg-slate-50"}`}>
                     <div>
-                      <p className="text-sm text-slate-900">{c.text}</p>
-                      <span className="text-xs text-slate-400 mt-1 block">{format(c.createdAt, "dd/MM/yyyy HH:mm")}</span>
+                      <p className={`text-sm ${isDark ? "text-slate-200" : "text-slate-900"}`}>{c.text}</p>
+                      <span className={`text-xs mt-1 block ${isDark ? "text-slate-500" : "text-slate-400"}`}>{format(c.createdAt, "dd/MM/yyyy HH:mm")}</span>
                     </div>
-                    <button onClick={() => deleteComment(columnId, currentCard.id, c.id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => deleteComment(columnId, currentCard.id, c.id)} className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Trash2 size={14} />
                     </button>
                   </div>
@@ -68,9 +70,9 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
               </div>
               <div className="flex gap-2">
                 <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Adicione um comentário..."
-                  className="flex-1 px-4 py-2 text-sm rounded-lg border border-slate-200 focus:border-blue-500 outline-none text-slate-900" />
+                  className={`flex-1 px-4 py-2 text-sm rounded-lg border outline-none transition-all ${isDark ? "bg-slate-700 text-slate-100 border-slate-600 focus:border-blue-500" : "bg-white text-slate-900 border-slate-200 focus:border-blue-500"}`} />
                 <button onClick={() => { if(comment.trim()){ addComment(columnId, card.id, comment); setComment(""); } }}
-                  className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors">
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${isDark ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-slate-800 text-white hover:bg-slate-700"}`}>
                   Enviar
                 </button>
               </div>
@@ -78,15 +80,15 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
           </div>
 
           <div className="space-y-4">
-            <div className="bg-slate-50 p-4 rounded-xl">
-              <p className="text-xs text-slate-500 mb-1">Criado em</p>
-              <p className="text-sm font-medium text-slate-900">{format(card.createdAt, "dd/MM/yyyy")}</p>
+            <div className={`p-4 rounded-xl transition-colors ${isDark ? "bg-slate-700" : "bg-slate-50"}`}>
+              <p className={`text-xs mb-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Criado em</p>
+              <p className={`text-sm font-medium ${isDark ? "text-slate-100" : "text-slate-900"}`}>{format(card.createdAt, "dd/MM/yyyy")}</p>
             </div>
             <button form="card-form" type="submit" className="w-full py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
               Salvar Alterações
             </button>
             <button onClick={() => { if(confirm("Tem certeza que deseja excluir este card?")){ deleteCard(columnId, card.id); onClose(); } }}
-              className="w-full py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors flex justify-center items-center gap-2">
+              className={`w-full py-2.5 font-medium rounded-xl transition-colors flex justify-center items-center gap-2 ${isDark ? "bg-red-900/30 text-red-400 hover:bg-red-900/50" : "bg-red-50 text-red-600 hover:bg-red-100"}`}>
               <Trash2 size={16} /> Excluir Card
             </button>
           </div>
