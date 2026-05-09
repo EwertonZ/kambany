@@ -73,7 +73,7 @@ export default function KanbanBoard() {
       <div className="min-w-[300px] shrink-0">
         <div className="bg-slate-100/50 border border-dashed border-slate-300 rounded-xl p-3 flex gap-2">
           <input value={newColTitle} onChange={e => setNewColTitle(e.target.value)} placeholder="Nova Coluna..."
-            className="flex-1 bg-transparent outline-none px-2 text-sm text-slate-700"
+            className="flex-1 bg-transparent outline-none px-2 text-sm text-slate-900"
             onKeyDown={e => { if(e.key === "Enter" && newColTitle) { createColumn(newColTitle); setNewColTitle(""); } }} />
           <button onClick={() => { if(newColTitle) { createColumn(newColTitle); setNewColTitle(""); } }} className="p-1 text-slate-500 hover:text-slate-800">
             <Plus size={20} />
@@ -98,7 +98,7 @@ function ColumnView({ column, onCardClick }: { column: Column, onCardClick: (car
   return (
     <div className="flex flex-col bg-slate-100 rounded-2xl w-[320px] shrink-0 max-h-full">
       <div className="p-4 flex justify-between items-center group">
-        <h3 className="font-semibold text-slate-700">{column.title} <span className="text-xs font-normal text-slate-400 ml-2">{column.cards.length}</span></h3>
+        <h3 className="font-semiboldtext-slate-900">{column.title} <span className="text-xs font-normal text-slate-400 ml-2">{column.cards.length}</span></h3>
         <button onClick={() => { if(confirm("Excluir coluna?")) deleteColumn(column.id) }} className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
           <X size={16} />
         </button>
@@ -114,7 +114,7 @@ function ColumnView({ column, onCardClick }: { column: Column, onCardClick: (car
         {isAdding ? (
           <div className="bg-white p-3 rounded-xl shadow-sm border border-blue-200">
             <input autoFocus value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Título da tarefa..."
-              className="w-full text-sm outline-none mb-2"
+              className="w-full text-sm outline-none mb-2 text-slate-900"
               onKeyDown={e => { if(e.key === "Enter" && newTitle) { createCard(column.id, newTitle); setNewTitle(""); setIsAdding(false); } }} />
             <div className="flex gap-2">
               <button onClick={() => { if(newTitle) createCard(column.id, newTitle); setNewTitle(""); setIsAdding(false); }} className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg">Salvar</button>
@@ -122,7 +122,7 @@ function ColumnView({ column, onCardClick }: { column: Column, onCardClick: (car
             </div>
           </div>
         ) : (
-          <button onClick={() => setIsAdding(true)} className="w-full py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-slate-500 hover:bg-slate-200/50 hover:text-slate-700 rounded-xl transition-colors">
+          <button onClick={() => setIsAdding(true)} className="w-full py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-slate-500 hover:bg-slate-200/50 hover:ext-slate-900 rounded-xl transition-colors">
             <Plus size={16} /> Adicionar Card
           </button>
         )}

@@ -33,27 +33,27 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
           <div className="col-span-2 space-y-6">
             <form id="card-form" onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Título</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1">Título</label>
                 <input name="title" defaultValue={card.title} autoFocus
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all" />
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-900" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Descrição</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1">Descrição</label>
                 <textarea name="description" defaultValue={card.description} rows={4}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-none" />
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-none text-slate-900" />
               </div>
             </form>
 
             <div className="pt-6 border-t border-slate-100">
-              <div className="flex items-center gap-2 mb-4 text-slate-700">
+              <div className="flex items-center gap-2 mb-4text-slate-900">
                 <MessageSquare size={18} />
-                <h3 className="font-medium">Comentários</h3>
+                <h3 className="font-medium text-slate-900">Comentários</h3>
               </div>
               <div className="space-y-3 mb-4">
                 {card.comments.map(c => (
                   <div key={c.id} className="bg-slate-50 p-3 rounded-lg flex justify-between items-start group">
                     <div>
-                      <p className="text-sm text-slate-700">{c.text}</p>
+                      <p className="text-smtext-slate-900">{c.text}</p>
                       <span className="text-xs text-slate-400 mt-1 block">{format(c.createdAt, "dd/MM/yyyy HH:mm")}</span>
                     </div>
                     <button onClick={() => deleteComment(columnId, card.id, c.id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -64,7 +64,7 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
               </div>
               <div className="flex gap-2">
                 <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Adicione um comentário..."
-                  className="flex-1 px-4 py-2 text-sm rounded-lg border border-slate-200 focus:border-blue-500 outline-none" />
+                  className="flex-1 px-4 py-2 text-sm rounded-lg border border-slate-200 focus:border-blue-500 outline-none text-slate-900" />
                 <button onClick={() => { if(comment.trim()){ addComment(columnId, card.id, comment); setComment(""); } }}
                   className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors">
                   Enviar
@@ -76,7 +76,7 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
           <div className="space-y-4">
             <div className="bg-slate-50 p-4 rounded-xl">
               <p className="text-xs text-slate-500 mb-1">Criado em</p>
-              <p className="text-sm font-medium text-slate-700">{format(card.createdAt, "dd/MM/yyyy")}</p>
+              <p className="text-sm font-medium text-slate-900">{format(card.createdAt, "dd/MM/yyyy")}</p>
             </div>
             <button form="card-form" type="submit" className="w-full py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
               Salvar Alterações
