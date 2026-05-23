@@ -6,7 +6,7 @@ import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, u
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useState } from "react";
-import { Card, Column } from "@/types/kanban";
+import { Card, Column, cardTypeColors } from "@/types/kanban";
 import { Plus, GripVertical, MessageSquare, X } from "lucide-react";
 import CardModal from "./CardModal";
 
@@ -145,7 +145,8 @@ function SortableCard({ card, onClick }: { card: Card, onClick: () => void }) {
       <div {...listeners} className={`absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing p-1 z-10 transition-opacity ${isDark ? "text-slate-600 hover:text-slate-400" : "text-slate-300 hover:text-slate-500"}`}>
         <GripVertical size={16} />
       </div>
-      <div onClick={onClick} className={`p-4 rounded-xl shadow-sm hover:shadow-md cursor-pointer pl-8 transition-shadow ${isDark ? "bg-slate-700 border border-slate-600 hover:border-slate-500" : "bg-white border border-slate-100"}`}>
+      <div onClick={onClick} className={`p-4 rounded-xl shadow-sm hover:shadow-md cursor-pointer pl-8 transition-shadow border-l-4 ${isDark ? "bg-slate-700 border border-slate-600 hover:border-slate-500" : "bg-white border border-slate-100"}`}
+        style={{ borderLeftColor: cardTypeColors[card.type] }}>
         <h4 className={`text-sm font-medium ${isDark ? "text-slate-100" : "text-slate-800"}`}>{card.title}</h4>
         {card.description && <p className={`text-xs mt-1 line-clamp-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>{card.description}</p>}
         {card.comments.length > 0 && (
@@ -160,9 +161,11 @@ function SortableCard({ card, onClick }: { card: Card, onClick: () => void }) {
 
 // Sub-componente: Card visual para o DragOverlay
 function CardItem({ card, isOverlay }: { card: Card, isOverlay?: boolean }) {
+  const { isDark } = useTheme();
   return (
-    <div className={`p-4 rounded-xl shadow-xl border-2 border-blue-500 cursor-grabbing pl-8 bg-white ${isOverlay ? 'rotate-2 scale-105' : ''}`}>
-      <h4 className="text-sm font-medium text-slate-800">{card.title}</h4>
+    <div className={`p-4 rounded-xl shadow-xl border-l-4 cursor-grabbing pl-8 ${isDark ? "bg-slate-700" : "bg-white"} ${isOverlay ? 'rotate-2 scale-105' : ''}`}
+      style={{ borderLeftColor: cardTypeColors[card.type] }}>
+      <h4 className={`text-sm font-medium ${isDark ? "text-slate-100" : "text-slate-800"}`}>{card.title}</h4>
     </div>
   );
 }
