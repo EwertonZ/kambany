@@ -1,3 +1,11 @@
+export type CardType = "EPIC" | "HISTORY" | "TASK";
+
+export const cardTypeColors: Record<CardType, string> = {
+  EPIC: "#9333ea",    // Roxo
+  HISTORY: "#3b82f6", // Azul
+  TASK: "#eab308",    // Amarelo
+};
+
 export interface Comment {
   id: string;
   text: string;
@@ -8,6 +16,7 @@ export interface Card {
   id: string;
   title: string;
   description: string;
+  type: CardType;
   createdAt: number;
   comments: Comment[];
 }

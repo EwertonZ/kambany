@@ -1,11 +1,13 @@
 "use client";
 
-import { Card } from "@/types/kanban";
+import { Card, CardType, cardTypeColors } from "@/types/kanban";
 import { useKanban } from "@/context/KanbanContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useState } from "react";
 import { X, Trash2, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
+
+const CARD_TYPES: CardType[] = ["EPIC", "HISTORY", "TASK"];
 
 export default function CardModal({ card, columnId, onClose }: { card: Card; columnId: string; onClose: () => void }) {
   const { activeBoard, updateCard, deleteCard, addComment, deleteComment } = useKanban();
@@ -22,6 +24,7 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
     updateCard(columnId, currentCard.id, {
       title: formData.get("title") as string,
       description: formData.get("description") as string,
+      type: formData.get("type") as CardType,
     });
   };
 
@@ -42,6 +45,17 @@ export default function CardModal({ card, columnId, onClose }: { card: Card; col
                 <label className={`block text-sm font-medium mb-1 ${isDark ? "text-slate-200" : "text-slate-900"}`}>Título</label>
                 <input name="title" defaultValue={currentCard.title} autoFocus
                   className={`w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all ${isDark ? "bg-slate-700 text-slate-100 border-slate-600 focus:border-blue-500 focus:ring-blue-900" : "bg-white text-slate-900 border-slate-200 focus:border-blue-500 focus:ring-blue-100"}`} />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium mb-1 ${isDark ? "text-slate-200" : "text-slate-900"}`}>Tipo</label>
+                <select name="type" defaultValue={currentCard.type}
+                  className={`w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all ${isDark ? "bg-slate-700 text-slate-100 border-slate-600 focus:border-blue-500 focus:ring-blue-900" : "bg-white text-slate-900 border-slate-200 focus:border-blue-500 focus:ring-blue-100"}`}>
+                  {CARD_TYPES.map(type => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className={`block text-sm font-medium mb-1 ${isDark ? "text-slate-200" : "text-slate-900"}`}>Descrição</label>

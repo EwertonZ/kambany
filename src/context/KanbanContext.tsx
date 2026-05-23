@@ -100,7 +100,7 @@ export const KanbanProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Funções de Card
   const createCard = (columnId: string, title: string, description = "") => {
-    const newCard: Card = { id: uuidv4(), title, description, createdAt: Date.now(), comments: [] };
+    const newCard: Card = { id: uuidv4(), title, description, type: "TASK", createdAt: Date.now(), comments: [] };
     updateBoard((b) => ({
       ...b,
       columns: b.columns.map((c) => (c.id === columnId ? { ...c, cards: [...c.cards, newCard] } : c)),
