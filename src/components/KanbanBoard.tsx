@@ -84,7 +84,12 @@ export default function KanbanBoard() {
       </div>
 
       {editingCardInfo && (
-        <CardModal card={editingCardInfo.card} columnId={editingCardInfo.colId} onClose={() => setEditingCardInfo(null)} />
+        <CardModal 
+          card={editingCardInfo.card} 
+          columnId={editingCardInfo.colId} 
+          onClose={() => setEditingCardInfo(null)}
+          onCardClick={(card, colId) => setEditingCardInfo({ card, colId })}
+        />
       )}
     </div>
   );

@@ -17,6 +17,7 @@ export interface Card {
   title: string;
   description: string;
   type: CardType;
+  parentId?: string | null;
   createdAt: number;
   comments: Comment[];
 }
