@@ -16,6 +16,7 @@ interface KanbanContextData {
   createCard: (columnId: string, title: string, description?: string) => void;
   updateCard: (columnId: string, cardId: string, updates: Partial<Card>) => void;
   deleteCard: (columnId: string, cardId: string) => void;
+  createBoardFromTemplate: (name: string, template: any) => void;
   moveCard: (cardId: string, sourceColId: string, destColId: string, newIndex: number) => void;
   addComment: (columnId: string, cardId: string, text: string) => void;
   deleteComment: (columnId: string, cardId: string, commentId: string) => void;
@@ -105,6 +106,75 @@ export const KanbanProvider = ({ children }: { children: React.ReactNode }) => {
       ...b,
       columns: b.columns.map((c) => (c.id === columnId ? { ...c, cards: [...c.cards, newCard] } : c)),
     }));
+  };
+
+  // Criar board completo a partir de um template gerado pela IA
+  const createBoardFromTemplate = (name: string, template: any) => {
+    try {
+      const newBoard: Board = { id: uuidv4(), name, createdAt: Date.now(), columns: [] };
+
+      const titleToIdMap: Record<string, string> = {};
+      const idSet = new Set<string>();
+
+      // Criar colunas e cards sem parentId primeiro, preservando ids se fornecidos
+      newBoard.columns = (template.columns || []).map((col: any) => {
+        const colId = col.id || uuidv4();
+        idSet.add(colId);
+        const newCol: Column = { id: colId, title: col.title || "", cards: [] };
+        newCol.cards = (col.cards || []).map((card: any) => {
+          const cardId = card.id || uuidv4();
+          idSet.add(cardId);
+          const newCard: Card = {
+            id: cardId,
+            title: card.title || "",
+            description: card.description || "",
+            type: card.type || "TASK",
+            parentId: null,
+            createdAt: Date.now(),
+            comments: [],
+          };
+          // Map by title to help resolve parents later
+          if (newCard.title) titleToIdMap[newCard.title] = newCard.id;
+          return newCard;
+        });
+        return newCol;
+      });
+
+      // Resolver parentId usando parentId direto ou parentTitle
+      // Percorrer template e newBoard em paralelo para suportar parent info por card
+      for (let colIndex = 0; colIndex < (template.columns || []).length; colIndex++) {
+        const tmplCol = template.columns[colIndex] || { cards: [] };
+        const newCol = newBoard.columns[colIndex];
+        if (!newCol) continue;
+        for (let cardIndex = 0; cardIndex < (tmplCol.cards || []).length; cardIndex++) {
+          const tmplCard = tmplCol.cards[cardIndex] || {};
+          const newCard = newCol.cards[cardIndex];
+          if (!newCard) continue;
+
+          // Prefer explicit parentId if provided
+          if (tmplCard.parentId) {
+            const pid = tmplCard.parentId;
+            // if parentId is a title string, resolve by title
+            if (typeof pid === 'string') {
+              if (idSet.has(pid)) {
+                newCard.parentId = pid;
+              } else if (titleToIdMap[pid]) {
+                newCard.parentId = titleToIdMap[pid];
+              }
+            }
+          } else if (tmplCard.parentTitle) {
+            const pt = tmplCard.parentTitle;
+            if (pt && titleToIdMap[pt]) newCard.parentId = titleToIdMap[pt];
+          }
+        }
+      }
+
+      setState((prev) => ({ boards: [...prev.boards, newBoard], activeBoardId: newBoard.id }));
+      toast.success("Board gerado com sucesso a partir da IA!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao criar board a partir do template.");
+    }
   };
   
   const updateCard = (columnId: string, cardId: string, updates: Partial<Card>) => {
@@ -221,7 +291,7 @@ export const KanbanProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <KanbanContext.Provider value={{
-      state, activeBoard, setActiveBoard, createBoard, deleteBoard,
+      state, activeBoard, setActiveBoard, createBoard, createBoardFromTemplate, deleteBoard,
       createColumn, deleteColumn, createCard, updateCard, deleteCard,
       moveCard, addComment, deleteComment, exportData, importData
     }}>
