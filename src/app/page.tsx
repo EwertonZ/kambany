@@ -5,11 +5,15 @@ import { useTheme } from "@/context/ThemeContext";
 import KanbanBoard from "@/components/KanbanBoard";
 import { LayoutDashboard, Download, Upload, Plus, Trash2, Moon, Sun } from "lucide-react";
 import { useState, useRef } from "react";
+import AICreateBoardModal from "../components/AICreateBoardModal";
+import SettingsModal from "../components/SettingsModal";
 
 export default function Home() {
   const { state, activeBoard, setActiveBoard, createBoard, deleteBoard, exportData, importData } = useKanban();
   const { isDark, toggleTheme } = useTheme();
   const [newBoardName, setNewBoardName] = useState("");
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -41,15 +45,23 @@ export default function Home() {
             <input value={newBoardName} onChange={e => setNewBoardName(e.target.value)} placeholder="Novo board..."
               className={`w-full text-sm px-3 py-2 rounded-lg outline-none border transition-colors ${isDark ? "bg-slate-800 text-white border-slate-700 focus:border-blue-500" : "bg-slate-800 text-white border-slate-700 focus:border-blue-500"}`}
               onKeyDown={e => { if(e.key === "Enter" && newBoardName) { createBoard(newBoardName); setNewBoardName(""); } }} />
-            <button onClick={() => { if(newBoardName) { createBoard(newBoardName); setNewBoardName(""); } }} className="bg-blue-600 p-2 rounded-lg text-white hover:bg-blue-700">
-              <Plus size={16} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button onClick={() => { if(newBoardName) { createBoard(newBoardName); setNewBoardName(""); } }} className="bg-blue-600 p-2 rounded-lg text-white hover:bg-blue-700">
+                <Plus size={24} />
+              </button>
+              <button title="Gerar com I.A" onClick={() => setShowAIModal(true)} className="bg-green-600 p-2 rounded-lg text-white hover:bg-green-700 flex items-center justify-center">
+                I.A
+              </button>
+            </div>
           </div>
         </div>
 
         <div className="mt-auto p-6 space-y-3">
           <button onClick={toggleTheme} className={`w-full flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl transition-colors ${isDark ? "bg-slate-800 hover:bg-slate-700" : "bg-slate-800 hover:bg-slate-700"}`}>
             {isDark ? <Sun size={16} /> : <Moon size={16} />} {isDark ? "Modo Claro" : "Modo Escuro"}
+          </button>
+          <button onClick={() => setShowSettingsModal(true)} className={`w-full flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl transition-colors ${isDark ? "bg-slate-800 hover:bg-slate-700" : "bg-slate-800 hover:bg-slate-700"}`}>
+            Google AI API-KEY
           </button>
           <button onClick={exportData} className={`w-full flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl transition-colors ${isDark ? "bg-slate-800 hover:bg-slate-700" : "bg-slate-800 hover:bg-slate-700"}`}>
             <Download size={16} /> Exportar Backup
@@ -60,6 +72,9 @@ export default function Home() {
           <input type="file" accept=".json" className="hidden" ref={fileInputRef} onChange={e => { const file = e.target.files?.[0]; if(file) { importData(file); e.target.value = ''; } }} />
         </div>
       </aside>
+
+      {showAIModal && <AICreateBoardModal onClose={() => setShowAIModal(false)} />}
+      {showSettingsModal && <SettingsModal onClose={() => setShowSettingsModal(false)} />}
 
       {/* Main Área */}
       <section className={`flex-1 flex flex-col min-w-0 transition-colors ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
